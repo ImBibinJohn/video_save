@@ -1,0 +1,8 @@
+<form method="post" action="{% url 'upload_video' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Enter title" required>
+    <input type="file" name="video" accept="video/*" required>
+    <button type="submit">Upload</button>
+  </form>
+  <a href="{% url 'record_video' %}"><button>Record Video</button></a>
+  <a href="{% url 'view_all' %}"><button>Show All</button></a>

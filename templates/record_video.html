@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="base/icons/favicon.png"/>
+
+<head>
+    <title>video_convert</title>
+    <style>
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h6 {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-file-input.selected:lang(en)::after {
+            content: "" !important;
+        }
+
+        .custom-file {
+            overflow: hidden;
+        }
+
+        .custom-file-input {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="input-group">
+                <div class="custom-file">
+                  <input type="text" name="name" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                <div class="input-group-append">
+                  <button type="submit" name="action" value="record" class="btn btn-primary" id="customFileInput">Start</button>&nbsp;
+                  <button type="submit" name="action" value="stop" class="btn btn-secondary" id="customFileInput">Stop</button>&nbsp;
+                  <a href="{% url 'index' %}" style="text-decoration: none;color: #fff;"><button class="btn btn-primary" type="button">Home</a></button>&nbsp;
+                </div>
+              </div>
+        </form>
+    </div>
+</body>
+
+</html>
