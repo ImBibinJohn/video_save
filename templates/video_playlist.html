@@ -1,0 +1,8 @@
+{% for v in videos %}
+<video controls>
+    <source src="{{ v.video_file.url }}" type="video/webm">
+    Your browser does not support the video tag.
+</video>
+<p>{{ v.title }}</p>
+<hr>
+{% endfor %}

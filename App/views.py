@@ -5,14 +5,16 @@ from .models import *
 import os
 import cv2
 import uuid
+import json
 from django.http import HttpResponse
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.core.files import File
 from .models import Video
-
-
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.views.decorators.csrf import csrf_exempt
 
 
 def error_404(request, *args, **kwargs):
@@ -38,10 +40,35 @@ def upload_video(request):
     else:
         return HttpResponse('Invalid request.')
 
+
 def view_all(request):
     videos = Video.objects.all()
-    return render(request, 'show_all.html',{'videos':videos})
+    return render(request, 'show_all.html', {'videos': videos})
 
+def share_link(request):
+    if request.method == 'POST':
+        print('it triggered')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            video = Video.objects.latest('id')
+            thisdict = {
+                "video": f"{video.id}",
+                "success": True
+            }
+            return JsonResponse(thisdict)
+        else:
+            return JsonResponse({"success": False, "video": ""})
+    else:
+        return JsonResponse({"success": False, "video": ""})
+
+
+@csrf_exempt
+def refresh_videos(request):
+    videos = Video.objects.all()
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        html = render_to_string('video_playlist.html', {'videos': videos})
+        return JsonResponse({'html': html})
+
+    return render(request, 'show_all.html', {'videos': videos})
 
 
 def record_video(request):

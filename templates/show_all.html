@@ -1,22 +1,44 @@
-<link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
-<script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Playlist</title>
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+</head>
+<body>
+    <div id="video-playlist">
+        <h2>Video Playlist</h2>
+        {% for v in videos %}
+        <video controls>
+            <source src="{{ v.video_file.url }}" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+        <p>{{ v.title }}</p>
+        <hr>
+        {% endfor %}
+    </div>
 
-<link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
-<script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+    <script>
+        $(document).ready(function() {
+            function refreshVideos() {
+                $.ajax({
+                    url: "{% url 'refresh_videos' %}",  // Replace with the URL for refreshing videos
+                    type: "GET",
+                    dataType: "html",
+                    success: function(data) {
+                        $("#video-playlist").html(data.html);  // Update the video playlist div with the refreshed content
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
 
-<div>
-    <h2>Video Playlist</h2>
-    {% for v in videos %}
-    <video controls>
-        <source src="{{ v.video_file.url }}" type="video/webm">
-        Your browser does not support the video tag.
-      </video>
-    <p>{{ v.title }}</p>
-    <hr>
-    {% endfor %}
-</div>
-<script>
-    var player = videojs('my-video');
-    player.play();
-</script>
+            // Refresh videos every 5 seconds (adjust the interval as needed)
+            setInterval(refreshVideos, 5000);
+        });
+    </script>
+</body>
+</html>

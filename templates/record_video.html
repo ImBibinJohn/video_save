@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="shortcut icon" type="image/x-icon" href="base/icons/favicon.png"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="shortcut icon" type="image/x-icon" href="base/icons/favicon.png" />
 
 <head>
     <title>video_convert</title>
@@ -43,22 +43,84 @@
         }
     </style>
 </head>
+
 <body>
     <div class="form-container">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="input-group">
                 <div class="custom-file">
-                  <input type="text" name="name" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="text" name="name" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </div>
                 <div class="input-group-append">
-                  <button type="submit" name="action" value="record" class="btn btn-primary" id="customFileInput">Start</button>&nbsp;
-                  <button type="submit" name="action" value="stop" class="btn btn-secondary" id="customFileInput">Stop</button>&nbsp;
-                  <a href="{% url 'index' %}" style="text-decoration: none;color: #fff;"><button class="btn btn-primary" type="button">Home</a></button>&nbsp;
+                    <button type="submit" name="action" value="record" class="btn btn-primary"
+                        id="customFileInput">Start</button>&nbsp;
+                    <button type="submit" name="action" value="stop" class="btn btn-secondary"
+                        id="customFileInput">Stop</button>&nbsp;
+                    <a href="{% url 'index' %}" style="text-decoration: none;color: #fff;"><button
+                            class="btn btn-primary" type="button">Home</a></button>&nbsp;
                 </div>
-              </div>
+            </div>
         </form>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        <button id="get_link">Get Link</button>
+        <a href="#"></a> http://127.0.0.1:8000/<span></span>
+    </form>
     </div>
 </body>
 
 </html>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#get_link').click(function (e) {
+            e.preventDefault();
+
+            // Get the CSRF token from the cookie
+            var csrftoken = getCookie('csrftoken');
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'share_link' %}",
+                data: $(this).serialize(),
+                beforeSend: function (xhr) {
+                    // Include the CSRF token in the request headers
+                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $('span').html(response.video);
+                    } else {
+                        alert('link failed!');
+                        alert(response.video);
+                    }
+                },
+                error: function () {
+                    alert('Error occurred while generating link!');
+                }
+            });
+        });
+    });
+
+    // Function to retrieve the CSRF token from the cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
